@@ -6,7 +6,6 @@ DROP TABLE IF EXISTS performance;
 DROP TABLE IF EXISTS movie;
 DROP TABLE IF EXISTS ticket;
 DROP TABLE IF EXISTS customer;
-
 PRAGMA foreign_keys=ON;
 
 
@@ -37,8 +36,11 @@ CREATE TABLE Performance (
     theater_name TEXT,
 
     FOREIGN KEY (IMDB_key) REFERENCES Movie(IMDB_key),
-    FOREIGN KEY (theater_name) REFERENCES Theater(theater_name)
+    FOREIGN KEY (theater_name) REFERENCES Theater(theater_name),
 
+    /* Förslag på lösning capacity constraint */
+    capacity INT REFERENCES Theater(capacity),
+    ticket_counter INTEGER
     );
 
 CREATE TABLE Ticket (
@@ -46,7 +48,11 @@ CREATE TABLE Ticket (
     performance_id TEXT,
     username TEXT,
     FOREIGN KEY (performance_id) REFERENCES Performance(performance_id),
-    FOREIGN KEY (username) REFERENCES Customer(username)
+    FOREIGN KEY (username) REFERENCES Customer(username),
+
+    /* Förslag på lösning capacity constraint */
+    max INT REFERENCES Performance(capacity),
+    ticket_counter INTEGER REFERENCES Perfromance(capacity) AUTOINCREMENT CHECK (max >= ticker_counter)
 );
 
 
