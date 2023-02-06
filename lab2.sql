@@ -43,3 +43,17 @@ CREATE TABLE customer (
 
     PRIMARY KEY(username)
 )
+
+INSERT INTO Theater (theater_name, capacity)
+VALUES 
+    ('Sparta',90),
+    ('Västgöta Nation',25),
+    ('Lunds bio',300);
+
+
+INSERT INTO MOVIE (IMDB_key,running_time,title,production_year)
+VALUES
+    ('abcd123','90','Need for speed','2020'),
+    ('efgh456','120','Avatar: The last airbender','2004'),
+    ('ijkl789','116','Grabben i graven bredvid','2002'),
+    ('mnop123','123','Alla vägar bär till rom','2002');
