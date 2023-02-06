@@ -4,7 +4,8 @@ _name_
 capacity
 </panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>310</x><y>190</y><w>210</w><h>190</h></coordinates><panel_attributes>Performance
 --
-_time_
+_performance_id_
+time
 
 (_id_)?</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>200</x><y>280</y><w>130</w><h>40</h></coordinates><panel_attributes>lt=-
 m1=1
