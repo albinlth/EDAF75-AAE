@@ -12,7 +12,7 @@ m1=1
 m2=*</panel_attributes><additional_attributes>10;10;110;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>630</x><y>190</y><w>210</w><h>190</h></coordinates><panel_attributes>Movie
 --
 _IMDB_
-length
+running_time
 title
 year
 </panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>510</x><y>280</y><w>130</w><h>40</h></coordinates><panel_attributes>lt=-
