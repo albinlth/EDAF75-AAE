@@ -42,7 +42,7 @@ CREATE TABLE Performance (
     );
 
 CREATE TABLE Ticket (
-    ticket_id TEXT PRIMARY KEY,
+    ticket_id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
     performance_id TEXT,
     username TEXT,
     FOREIGN KEY (performance_id) REFERENCES Performance(performance_id),
@@ -68,15 +68,30 @@ VALUES
 
 INSERT INTO Performance (performance_date,start_time,IMDB_key,theater_name)
 VALUES
-    ('2022–02-01','19:00','abcd123','Sparta'), 
-    ('2022–02-01','19:30','abcd123','Sparta'),
-    ('2022–02-01','20:00','abcd123','Sparta'),
-    ('2022–02-01','20:30','abcd123','Sparta'),
-    ('2022–03-06','19:00','efgh456','Västgöta Nation'),
-    ('2022–03-06','19:30','efgh456','Västgöta Nation'),
-    ('2022–03-06','20:00','efgh456','Västgöta Nation'),
-    ('2022–03-06','20:30','efgh456','Västgöta Nation'),
-    ('2022–03-06','19:00','ijkl789','Lunds Bio'),
-    ('2022–03-06','19:30','ijkl789','Lunds Bio'),
-    ('2022–03-06','20:00','ijkl789','Lunds Bio'),
-    ('2022–03-06','20:30','ijkl789','Lunds Bio');
+    ('2022-02-01','19:00','abcd123','Sparta'), 
+    ('2022-02-01','19:30','abcd123','Sparta'),
+    ('2022-02-01','20:00','abcd123','Sparta'),
+    ('2022-02-01','20:30','abcd123','Sparta'),
+    ('2022-03-06','19:00','efgh456','Västgöta Nation'),
+    ('2022-03-06','19:30','efgh456','Västgöta Nation'),
+    ('2022-03-06','20:00','efgh456','Västgöta Nation'),
+    ('2022-03-06','20:30','efgh456','Västgöta Nation'),
+    ('2022-03-06','19:00','ijkl789','Lunds Bio'),
+    ('2022-03-06','19:30','ijkl789','Lunds Bio'),
+    ('2022-03-06','20:00','ijkl789','Lunds Bio'),
+    ('2022-03-06','20:30','ijkl789','Lunds Bio');
+
+INSERT INTO customer (username,full_name,user_password)
+VALUES
+    ("user1","user username","password"),
+    ("user2","user2 username2","h4ck3r"),
+    ("user3","user3 username3 lastname3","1337");
+
+INSERT INTO Ticket (performance_id,username)
+VALUES
+    (1,"user1"),
+    (1,"user3"),
+    (2,"user2"),
+    (4,"user3"),
+    (4,"user2"),
+    (4,"user1");
