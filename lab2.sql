@@ -36,32 +36,36 @@ CREATE TABLE Performance (
     theater_name TEXT,
 
     FOREIGN KEY (IMDB_key) REFERENCES Movie(IMDB_key),
-    FOREIGN KEY (theater_name) REFERENCES Theater(theater_name),
+    FOREIGN KEY (theater_name) REFERENCES Theater(theater_name)
+);
 
-    /* Förslag på lösning capacity constraint */
-    capacity INT REFERENCES Theater(capacity),
-    ticket_counter INTEGER
-    );
+
 
 CREATE TABLE Ticket (
     ticket_id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
     performance_id TEXT,
     username TEXT,
     FOREIGN KEY (performance_id) REFERENCES Performance(performance_id),
-    FOREIGN KEY (username) REFERENCES Customer(username),
-
-    /* Förslag på lösning capacity constraint */
-    max INT REFERENCES Performance(capacity),
-    ticket_counter INTEGER REFERENCES Perfromance(capacity) AUTOINCREMENT CHECK (max >= ticker_counter)
+    FOREIGN KEY (username) REFERENCES Customer(username)
+ 
 );
 
-
+CREATE TRIGGER ticket_check
+    BEFORE INSERT ON Ticket
+BEGIN
+    SELECT
+        CASE
+            WHEN (SELECT count() FROM Ticket WHERE Ticket.performance_id = NEW.performance_id) = (SELECT capacity FROM Theater WHERE Theater.theater_name = (SELECT theater_name FROM Performance WHERE Performance.performance_id = NEW.performance_id))
+            THEN RAISE (ABORT, 'Sold out')
+        END;
+END;
 
 INSERT INTO Theater (theater_name, capacity)
 VALUES 
     ('Sparta',90),
     ('Västgöta Nation',25),
-    ('Lunds Bio',300);
+    ('Lunds Bio',300),
+    ('Albins rum', 2);
 
 
 INSERT INTO Movie (IMDB_key,running_time,title,production_year)
@@ -85,7 +89,9 @@ VALUES
     ('2022-03-06','19:00','ijkl789','Lunds Bio'),
     ('2022-03-06','19:30','ijkl789','Lunds Bio'),
     ('2022-03-06','20:00','ijkl789','Lunds Bio'),
-    ('2022-03-06','20:30','ijkl789','Lunds Bio');
+    ('2022-03-06','20:30','ijkl789','Lunds Bio'),
+
+    ('2023-02-08', '20:00', 'abcd123', 'Albins rum');
 
 INSERT INTO customer (username,full_name,user_password)
 VALUES
