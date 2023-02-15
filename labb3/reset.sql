@@ -29,7 +29,7 @@ CREATE TABLE Customer (
 
 
 CREATE TABLE Performance (
-    performance_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    performance_id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
     performance_date DATE,
     start_time TIME,
     IMDB_KEY TEXT,
@@ -39,6 +39,27 @@ CREATE TABLE Performance (
     FOREIGN KEY (theater_name) REFERENCES Theater(theater_name)
 );
 
+CREATE TRIGGER performance_check
+    BEFORE INSERT ON Performance
+BEGIN
+    SELECT
+        CASE
+            WHEN(
+            (SELECT count()
+            FROM movie
+            WHERE movie.IMDB_key = NEW.IMDB_key
+            ) < 1
+
+            OR
+
+            (SELECT count()
+            FROM Theater
+            WHERE Theater.theater_name = NEW.Theater_name
+            ) < 1
+            ) 
+            THEN RAISE (ABORT, 'No such movie or theater!')
+        END;
+END;
 
 
 CREATE TABLE Ticket (
