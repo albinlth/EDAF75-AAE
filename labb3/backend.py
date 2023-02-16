@@ -12,7 +12,7 @@ def ping():
     response.status =200
     return 'pong'
 
-@get('/reset')
+@post('/reset')
 def reset():
     #Reset query.
     fd = open('EDAF75-AAE/labb3/reset.sql', 'r')
@@ -45,8 +45,9 @@ def users():
         db.commit()
         return "/users/"+username
 
-    except:
+    except Exception as e:
         response.status = 400
+        print(e)
         return ""
 
 @post('/movies')
@@ -72,7 +73,7 @@ def movies():
         response.status = 400
         return ""
 
-@post('/performance')
+@post('/performances')
 def performance():
     #return performance
     fd = open('EDAF75-AAE/labb3/insertPerformance.sql', 'r') 
@@ -94,7 +95,7 @@ def performance():
 
         found = c.fetchone()
         response.status = 201
-        return "/performance/" +str(found[0])
+        return "/performances/" +str(found[0])
     except:
         response.status = 400
         return "No such movie or theater"
@@ -105,7 +106,6 @@ def returnMovies():
     sqlFile = fd.read()
     fd.close()
     params = []
-    print(request.query.title)
     if request.query.title:
         sqlFile += " AND title = ?"
         params.append(request.query.title)
@@ -117,7 +117,6 @@ def returnMovies():
     c = db.cursor()
     c.execute(sqlFile,params)
 
-    print(sqlFile)
     
     found = [{"imdbKey":IMDB_key, "title":title, "year":production_year}
         for IMDB_key, title, production_year in c]
@@ -144,14 +143,6 @@ def returnPerformances():
     fd = open('EDAF75-AAE/labb3/getPerformances.sql', 'r') 
     sqlFile = fd.read()
     fd.close()
-    # params = []
-    # print(request.query.title)
-    # if request.query.title:
-    #     sqlFile += " AND title = ?"
-    #     params.append(request.query.title)
-    # if request.query.year:
-    #     sqlFile += " AND production_year = ?"
-    #     params.append(request.query.year)
 
     sqlFile += ";"
     c = db.cursor()
@@ -161,12 +152,43 @@ def returnPerformances():
             "date": performance_date,
             "startTime": start_time,
             "title": title,
-            "year": year,
+            "year": production_year,
             "theater": theater_name,
             "remaingingSeats" : remaining_seats,
             }
-        for performance_id, performance_date, start_time,title,year,theater_name,remaining_seats in c]
+        for performance_id, performance_date, start_time,title,production_year,theater_name,remaining_seats in c]
     return {"data":found}
+
+@post('/tickets')
+def tickets():
+    fd = open('EDAF75-AAE/labb3/registerTicket.sql', 'r')
+    sqlFile = fd.read().split(';')
+    fd.close()
+
+    user = request.json
+    username = user['username']
+    pwd = user['pwd']
+    performanceId = user['performanceId']
+    c = db.cursor()
+
+    try:
+        c.execute(sqlFile[0],[performanceId,username,pwd])
+        db.commit()
+        c.execute(sqlFile[1])
+        ticketid ,= c.fetchone()
+        response.status = 201
+        return "/tickets/"+ticketid
+    except Exception as e:
+        if (str(e) == "Sold out"):
+            response.status =400
+            return "Sold out"
+        elif (str(e) == "Wrong user credentials"):
+            response.status =401
+            return "Wrong user credentials"
+        else:
+            response.status = 400
+            return "Error"
+
 
 
 

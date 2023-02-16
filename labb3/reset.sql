@@ -76,8 +76,11 @@ CREATE TRIGGER ticket_check
 BEGIN
     SELECT
         CASE
+            WHEN NEW.username IS NULL
+            THEN RAISE (ABORT, 'Wrong user credentials')
             WHEN (SELECT count() FROM Ticket WHERE Ticket.performance_id = NEW.performance_id) = (SELECT capacity FROM Theater WHERE Theater.theater_name = (SELECT theater_name FROM Performance WHERE Performance.performance_id = NEW.performance_id))
             THEN RAISE (ABORT, 'Sold out')
+             
         END;
 END;
 
@@ -90,38 +93,28 @@ VALUES
 
 /*
 
-INSERT INTO Theater (theater_name, capacity)
-VALUES 
-    ('Sparta',90),
-    ('Västgöta Nation',25),
-    ('Lunds Bio',300),
-    ('Albins rum', 2);
-
-
 INSERT INTO Movie (IMDB_key,running_time,title,production_year)
 VALUES
-    ('abcd123','90','Need for speed',2020),
-    ('efgh456','120','Avatar: The last airbender',2004),
+    ('abcd123','abcd123','Need for speed',2020),
+    ('efgh456','efgh456','Avatar: The last airbender',2004),
     ('ijkl789','116','Grabben i graven bredvid',2002),
-    ('mnop123','123','Alla vägar bär till rom',2002);
+    ('mnop123','ijkl789','Alla vägar bär till rom',2002);
 
 
 INSERT INTO Performance (performance_date,start_time,IMDB_key,theater_name)
 VALUES
-    ('2022-02-01','19:00','abcd123','Sparta'), 
-    ('2022-02-01','19:30','abcd123','Sparta'),
-    ('2022-02-01','20:00','abcd123','Sparta'),
-    ('2022-02-01','20:30','abcd123','Sparta'),
-    ('2022-03-06','19:00','efgh456','Västgöta Nation'),
-    ('2022-03-06','19:30','efgh456','Västgöta Nation'),
-    ('2022-03-06','20:00','efgh456','Västgöta Nation'),
-    ('2022-03-06','20:30','efgh456','Västgöta Nation'),
-    ('2022-03-06','19:00','ijkl789','Lunds Bio'),
-    ('2022-03-06','19:30','ijkl789','Lunds Bio'),
-    ('2022-03-06','20:00','ijkl789','Lunds Bio'),
-    ('2022-03-06','20:30','ijkl789','Lunds Bio'),
-
-    ('2023-02-08', '20:00', 'abcd123', 'Albins rum');
+    ('2022-02-01','19:00','abcd123','Kino'), 
+    ('2022-02-01','19:30','abcd123','Kino'),
+    ('2022-02-01','20:00','abcd123','Kino'),
+    ('2022-02-01','20:30','abcd123','Kino'),
+    ('2022-03-06','19:00','efgh456','Regal'),
+    ('2022-03-06','19:30','efgh456','Regal'),
+    ('2022-03-06','20:00','efgh456','Regal'),
+    ('2022-03-06','20:30','efgh456','Regal'),
+    ('2022-03-06','19:00','ijkl789','Skandia'),
+    ('2022-03-06','19:30','ijkl789','Skandia'),
+    ('2022-03-06','20:00','ijkl789','Skandia'),
+    ('2022-03-06','20:30','ijkl789','Skandia');
 
 INSERT INTO customer (username,full_name,user_password)
 VALUES
@@ -137,4 +130,5 @@ VALUES
     (4,"user3"),
     (4,"user2"),
     (4,"user1");
+
 */
